@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  sneaker_postgres_DB:
+    image: postgres:16.1-alpine3.19
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+  back_end:
+    depends_on:
+      - sneaker_postgres_DB
+    links:
+      - sneaker_postgres_DB
+    build: .
+    image: node:21-alpine3.19
+    working_dir: /app
+    volumes:
+      - ./back_end:/app
+
+volumes:
+  postgres_data:
